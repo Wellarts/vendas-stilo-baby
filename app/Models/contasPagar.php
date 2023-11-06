@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
-class contasPagar extends Model
+class ContasPagar extends Model
 {
     use HasFactory, LogsActivity;
 
