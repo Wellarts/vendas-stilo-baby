@@ -10,6 +10,7 @@ use Spatie\Activitylog\LogOptions;
 class ContasPagar extends Model
 {
     use HasFactory, LogsActivity;
+    
 
     protected $fillable = [
         'fornecedor_id',
