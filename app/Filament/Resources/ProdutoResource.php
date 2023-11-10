@@ -76,6 +76,7 @@ class ProdutoResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('codbar')
+                     ->label('Código de Barras')
                      ->searchable(),
                 Tables\Columns\TextColumn::make('estoque')
                     ->sortable(),
