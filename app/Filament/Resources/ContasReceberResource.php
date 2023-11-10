@@ -154,6 +154,7 @@ class ContasReceberResource extends Resource
                     ->alignCenter()
                     ->label('Valor Recebido')
                     ->badge()
+                    ->money('BRL')
                     ->color('success'),
              Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

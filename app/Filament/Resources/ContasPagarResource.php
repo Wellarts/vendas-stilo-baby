@@ -151,6 +151,7 @@ class ContasPagarResource extends Resource
                     ->date(),    
                 Tables\Columns\TextColumn::make('valor_pago')
                     ->badge()
+                    ->money('BRL')
                     ->color('success')
                     ->label('Valor Pago'),
                 Tables\Columns\TextColumn::make('created_at')
