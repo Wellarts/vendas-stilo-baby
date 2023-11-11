@@ -24,7 +24,7 @@ class VendaResource extends Resource
 {
     protected static ?string $model = Venda::class;
 
-   
+
     protected static ?string $navigationIcon = 'heroicon-s-shopping-cart';
 
     protected static ?string $navigationGroup = 'Saídas';
@@ -70,6 +70,7 @@ class VendaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('data_venda', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->sortable(),
@@ -104,7 +105,7 @@ class VendaResource extends Resource
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
@@ -112,7 +113,7 @@ class VendaResource extends Resource
             ContasReceberRelationManager::class,
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -120,5 +121,5 @@ class VendaResource extends Resource
             'create' => Pages\CreateVenda::route('/create'),
             'edit' => Pages\EditVenda::route('/{record}/edit'),
         ];
-    }    
+    }
 }
