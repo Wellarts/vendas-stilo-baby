@@ -81,10 +81,10 @@ class ItensVendaRelationManager extends RelationManager
                     ->readOnly(),
                 Forms\Components\TextInput::make('acres_desc')
                     ->label('Desconto/Acréscimo')
-                    ->reactive()
+                    ->live(debounce: 500)
                     ->afterStateUpdated(function (Get $get, Set $set, $state) {
                         $set('sub_total', (((float)$get('qtd') * (float)$get('valor_venda')) + (float)$get('acres_desc')));
-                        $set('total_custo_atual',($get('total_custo_atual' + (float)$state)));
+                      //  $set('total_custo_atual',((float)$get('total_custo_atual') + (float)$get('acres_desc')));
                     }),
                 Forms\Components\TextInput::make('sub_total')
                     ->readOnly()
@@ -93,7 +93,7 @@ class ItensVendaRelationManager extends RelationManager
                 Forms\Components\Hidden::make('total_custo_atual'),
 
                     ])
-                
+
             ]);
     }
 
