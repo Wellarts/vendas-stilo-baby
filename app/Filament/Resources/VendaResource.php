@@ -70,7 +70,7 @@ class VendaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('data_venda', 'desc')
+            ->defaultSort('id', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->sortable(),
