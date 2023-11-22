@@ -32,7 +32,8 @@ class Dashboard extends \Filament\Pages\Dashboard
             ->title('ATENÇÃO')
             ->persistent()
             ->danger()
-            ->body('Sua mensalidade está atrasada, regularize sua assinatura para evitar o bloqueio do sistema.')
+            ->body('Sua mensalidade está atrasada, regularize sua assinatura para evitar o bloqueio do sistema.
+            PIX: 28708223831')
             ->actions([
                 Action::make('Entendi')
                     ->button()
