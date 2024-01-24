@@ -47,7 +47,7 @@ class ClienteResource extends Resource
                             ->required()
                             ->maxLength(255),
                         Forms\Components\TextInput::make('cpf_cnpj')
-                            ->label('CPF/CNPJ')
+                            ->label('CPF/CNPJ2')
                             ->mask(RawJs::make(<<<'JS'
                                     $input.length > 14 ? '99.999.999/9999-99' : '999.999.999-99'
                                 JS))
