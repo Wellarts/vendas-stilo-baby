@@ -10,9 +10,11 @@ use App\Models\Cliente;
 use App\Models\FormaPgmto;
 use App\Models\Funcionario;
 use App\Models\Venda;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\Summarizers\Sum;
@@ -28,6 +30,22 @@ class VendaResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-shopping-cart';
 
     protected static ?string $navigationGroup = 'Saídas';
+
+  /*  public function mount() {
+        Notification::make()
+            ->title('ATENÇÃO')
+            ->persistent()
+            ->danger()
+            ->body('Sua mensalidade está atrasada, regularize sua assinatura para evitar o bloqueio do sistema.')
+            ->actions([
+                Action::make('Entendi')
+                    ->button()
+                    ->close(),
+                ])
+            ->send();
+    } */
+
+    
 
     public static function form(Form $form): Form
     {

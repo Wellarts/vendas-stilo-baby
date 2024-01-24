@@ -5,11 +5,17 @@ namespace App\Filament\Resources\VendaResource\Pages;
 use App\Filament\Resources\VendaResource;
 use App\Livewire\VendaStatsOverview;
 use Filament\Actions;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 
 class ListVendas extends ListRecords
 {
     protected static string $resource = VendaResource::class;
+
+    
+
+
 
     protected function getHeaderActions(): array
     {
@@ -26,7 +32,7 @@ class ListVendas extends ListRecords
 
        /* if($authUser->hasRole('Administrador'))
          { */
-            return [  
+            return [
                 VendaStatsOverview::class
 
             ];
