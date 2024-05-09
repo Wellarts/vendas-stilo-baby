@@ -60,7 +60,7 @@ class PDV extends  page implements HasForms, HasTable
     public $qtd;
     public $pdv;
     public $venda;
-    
+
 
     public function mount(): void
     {
@@ -85,14 +85,14 @@ class PDV extends  page implements HasForms, HasTable
                             ->afterStateUpdated(function ($state, Get $get, Set $set) {
                               //  dd($get('produto_id'));
                               //  $produto = Produto::where('codbar','=', $state)->first();
-                                                             
+
                               //  $set('produto_nome', $produto->nome);
                                 $this->updated($state, $state);
                             }),
                      //   TextInput::make('produto_nome')
-                            
-                           
-                            
+
+
+
 
                     ]),
             ]);
@@ -131,7 +131,7 @@ class PDV extends  page implements HasForms, HasTable
                     ->send();
             }
         }
-    } 
+    }
 
     protected function getTableQuery(): Builder
     {
@@ -213,7 +213,7 @@ class PDV extends  page implements HasForms, HasTable
                                                         $input.length > 14 ? '99.999.999/9999-99' : '999.999.999-99'
                                                     JS))
                                                 ->rule('cpf_ou_cnpj'),
-                                                
+
                                             TextInput::make('telefone')
                                                 ->minLength(11)
                                                 ->maxLength(11)
@@ -246,7 +246,7 @@ class PDV extends  page implements HasForms, HasTable
                                                     return $estado->cidade->pluck('nome', 'id');
                                                 })
                                                 ->reactive(),
-                                            
+
                                             TextInput::make('email')
                                                 ->columnSpan([
                                                     'xl' => 2,
@@ -332,7 +332,7 @@ class PDV extends  page implements HasForms, HasTable
                         FluxoCaixa::create($addFluxoCaixa);
                         return route('filament.admin.pages.p-d-v');
 
-                    } 
+                    }
                     else {
                         $valor_parcela = ($record->valor_total / $data['parcelas']);
                         $vencimentos = Carbon::now();
@@ -352,12 +352,12 @@ class PDV extends  page implements HasForms, HasTable
                                             'valor_parcela' => $valor_parcela,
                                             ];
                                 ContasReceber::create($parcelas);
-                        }      
+                        }
 
                          return route('filament.admin.pages.p-d-v');
                     }
 
-                    //  return route('filament.admin.pages.p-d-v'); 
+                    //  return route('filament.admin.pages.p-d-v');
 
                 })
 

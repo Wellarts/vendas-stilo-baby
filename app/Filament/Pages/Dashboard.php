@@ -27,7 +27,7 @@ class Dashboard extends \Filament\Pages\Dashboard
      */
     protected static string $view = 'filament-panels::pages.dashboard';
 
-      public function mount() {
+  /*    public function mount() {
         Notification::make()
             ->title('ATENÇÃO')
             ->persistent()
@@ -40,7 +40,7 @@ class Dashboard extends \Filament\Pages\Dashboard
                     ->close(),
                 ])
             ->send();
-    }
+    } */
 
     public static function getNavigationLabel(): string
     {
