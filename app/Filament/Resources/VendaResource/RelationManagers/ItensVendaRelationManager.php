@@ -78,6 +78,7 @@ class ItensVendaRelationManager extends RelationManager
                         }
                     ),
                 Forms\Components\TextInput::make('valor_venda')
+                    ->label('Valor Venda')
                     ->numeric()
                     ->required()
                     ->readOnly(),
