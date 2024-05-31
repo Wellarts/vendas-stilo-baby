@@ -48,17 +48,20 @@ class ProdutoResource extends Resource
                             ->required(false),
                         Forms\Components\TextInput::make('estoque'),
                         Forms\Components\TextInput::make('valor_compra')
+                            ->numeric()
                             ->live(onBlur:true)
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 $set('valor_venda', ((((float)$get('valor_compra') * (float)$get('lucratividade'))/100) + (float)$get('valor_compra')));
                             }),
                         Forms\Components\TextInput::make('lucratividade')
+                            ->numeric()
                            // ->required()
                             ->live(onBlur:true)
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 $set('valor_venda', ((((float)$get('valor_compra') * (float)$get('lucratividade'))/100) + (float)$get('valor_compra')));
                             }),
                         Forms\Components\TextInput::make('valor_venda')
+                            ->numeric()
                            // ->disabled(),
                            ->live(onBlur:true)
                            ->afterStateUpdated(function (Get $get, Set $set) {
@@ -102,7 +105,7 @@ class ProdutoResource extends Resource
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
                 ExportBulkAction::make(),
-               
+
 
 
             ]);

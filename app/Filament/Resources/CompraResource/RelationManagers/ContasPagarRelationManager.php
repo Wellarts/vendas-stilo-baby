@@ -52,8 +52,9 @@ class ContasPagarRelationManager extends RelationManager
                             ->default('1')
                             ->required(),
                         Forms\Components\TextInput::make('parcelas')
+                            ->numeric()
                             ->default('1')
-                            ->reactive()
+                            ->live(debounce: 500)
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 if ($get('parcelas') != 1) {
                                     $set('valor_parcela', (($get('valor_total') / $get('parcelas'))));
@@ -83,6 +84,7 @@ class ContasPagarRelationManager extends RelationManager
                             ->default(now())
                             ->label("Data do Pagamento"),
                         Forms\Components\TextInput::make('valor_total')
+                            ->numeric()
                             ->label('Valor Total')
                             ->default((function ($livewire): float {
                                 return $livewire->ownerRecord->valor_total;
@@ -91,6 +93,7 @@ class ContasPagarRelationManager extends RelationManager
                             ->required(),
 
                         Forms\Components\TextInput::make('valor_parcela')
+                            ->numeric()
                             ->label('Valor da Parcela ')
                             ->default((function ($livewire): float {
                                 return $livewire->ownerRecord->valor_total;
@@ -98,6 +101,7 @@ class ContasPagarRelationManager extends RelationManager
                             ->required()
                             ->readOnly(),
                         Forms\Components\TextInput::make('valor_pago')
+                            ->numeric()
                             ->label('Valor Pago')
                             ->default((function ($livewire): float {
                                 return $livewire->ownerRecord->valor_total;
@@ -113,7 +117,7 @@ class ContasPagarRelationManager extends RelationManager
                             ->default('true')
                             ->label('Pago')
                             ->required()
-                            ->reactive()
+                            ->live(debounce: 500)
                           //  ->hidden(fn (Get $get): bool => $get('parcelas') != '1')
                             ->afterStateUpdated(
                                 function (Get $get, Set $set) {

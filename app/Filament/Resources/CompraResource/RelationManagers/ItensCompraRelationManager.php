@@ -36,7 +36,7 @@ class ItensCompraRelationManager extends RelationManager
                     ->default((function ($livewire): int {
                         return $livewire->ownerRecord->id;
                     })),
-                    
+
                 Forms\Components\Select::make('produto_id')
                     ->relationship(name: 'produto', titleAttribute: 'nome')
                     ->searchable(['nome', 'codbar'])
@@ -53,22 +53,25 @@ class ItensCompraRelationManager extends RelationManager
                         }
 
                     }
-                ), 
+                ),
                 Forms\Components\TextInput::make('valor_compra')
+                    ->numeric()
                     ->label('Valor Compra')
                     ->live(onBlur:true)
                     ->required()
                     ->afterStateUpdated(function (Get $get, Set $set) {
                         $set('sub_total', (($get('qtd') * $get('valor_compra'))));
                     }
-                ),   
+                ),
                 Forms\Components\TextInput::make('qtd')
+                    ->numeric()
                     ->required()
                     ->live(onBlur:true)
                     ->afterStateUpdated(function (Get $get, Set $set) {
                         $set('sub_total', (($get('qtd') * $get('valor_compra'))));
                     }),
                 Forms\Components\TextInput::make('sub_total')
+                    ->numeric()
                     ->readOnly()
                     ->label('Sub-Total'),
 
@@ -110,7 +113,7 @@ class ItensCompraRelationManager extends RelationManager
                         $prodFornecedor = [
                             'compra_id' => $data['compra_id'],
                             'produto_id' => $produto->id,
-                          
+
                             ];
                         ProdutoFornecedor::create($prodFornecedor);
                     })
@@ -142,7 +145,7 @@ class ItensCompraRelationManager extends RelationManager
                   $prodFornecedor = [
                     'compra_id' => $record->compra_id,
                     'produto_id' => $produto->id,
-                  
+
                     ];
                 ProdutoFornecedor::destroy($prodFornecedor);
                 }),

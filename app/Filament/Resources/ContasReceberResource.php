@@ -57,24 +57,27 @@ class ContasReceberResource extends Resource
                 ->required()
                 ->readOnly()
                 ->maxLength(255),
-           
+
             Forms\Components\DatePicker::make('data_vencimento')
                 ->label('Data do Vencimento')
                 ->displayFormat('d/m/Y')
                 ->required(),
-            
+
             Forms\Components\DatePicker::make('data_pagamento')
                 ->label('Data do Recebimento')
                 ->displayFormat('d/m/Y'),
-                Forms\Components\TextInput::make('valor_total')
+            Forms\Components\TextInput::make('valor_total')
+                ->numeric()
                 ->label('Valor Total')
                 ->readOnly()
                 ->required(),
-                Forms\Components\TextInput::make('valor_parcela')
+            Forms\Components\TextInput::make('valor_parcela')
+                ->numeric()
                 ->label('Valor da Parcela')
                 ->readOnly()
                 ->required(),
             Forms\Components\TextInput::make('valor_recebido')
+                ->numeric()
                 ->label('Valor Recebido'),
             Forms\Components\Textarea::make('obs')
                 ->columnSpan([
@@ -103,12 +106,12 @@ class ContasReceberResource extends Resource
                          }
              ),
 
-           
-            
+
+
                     ])
-            
+
         ]);
-            
+
     }
 
     public static function table(Table $table): Table
@@ -125,7 +128,7 @@ class ContasReceberResource extends Resource
                     ->badge()
                     ->color('warning')
                     ->label('Valor Total')
-                    ->money('BRL'),  
+                    ->money('BRL'),
                 Tables\Columns\TextColumn::make('data_vencimento')
                     ->alignCenter()
                     ->label('Data do Vencimento')
@@ -133,13 +136,13 @@ class ContasReceberResource extends Resource
                     ->color('danger')
                     ->sortable()
                     ->date(),
-                              
+
                 Tables\Columns\TextColumn::make('valor_parcela')
                     ->alignCenter()
                     ->badge()
                     ->color('danger')
                     ->label('Valor da Parcela')
-                    ->money('BRL'),      
+                    ->money('BRL'),
                 Tables\Columns\IconColumn::make('status')
                     ->alignCenter()
                     ->label('Recebido')
@@ -149,7 +152,7 @@ class ContasReceberResource extends Resource
                     ->label('Data do Recebimento')
                     ->badge()
                     ->color('success')
-                    ->date(),    
+                    ->date(),
                 Tables\Columns\TextColumn::make('valor_recebido')
                     ->alignCenter()
                     ->label('Valor Recebido')
@@ -207,11 +210,11 @@ class ContasReceberResource extends Resource
                 ]),
             ]);
     }
-    
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ManageContasRecebers::route('/'),
         ];
-    }    
+    }
 }

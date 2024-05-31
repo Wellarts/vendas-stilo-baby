@@ -61,6 +61,18 @@ class PDV extends  page implements HasForms, HasTable
     public $pdv;
     public $venda;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+         /** @var \App\Models\User */
+         $authUser =  auth()->user();
+
+         if ($authUser->hasRole('TI')) {
+             return true;
+         } else {
+             return false;
+         }
+    }
+
 
     public function mount(): void
     {
@@ -81,7 +93,7 @@ class PDV extends  page implements HasForms, HasTable
                             ->autocomplete()
                             ->autofocus()
                             ->extraInputAttributes(['tabindex' => 1])
-                            ->live(debounce: 300)
+                            ->live(debounce: 900)
                             ->afterStateUpdated(function ($state, Get $get, Set $set) {
                               //  dd($get('produto_id'));
                               //  $produto = Produto::where('codbar','=', $state)->first();
@@ -106,8 +118,8 @@ class PDV extends  page implements HasForms, HasTable
 
 
             $produto = Produto::where('codbar', '=', $value)->first();
-
-            if ($produto) {
+         //   dd($produto);
+            if ($produto != null) {
                 $addProduto = [
                     'produto_id' => $produto->id,
                     'venda_p_d_v_id' => $this->venda,
@@ -124,7 +136,8 @@ class PDV extends  page implements HasForms, HasTable
                 $this->produto_id = '';
                 $this->qtd = '';
                 $this->produto_nome = '';
-            } elseif ($produto == null) {
+            }
+            if($produto == '') {
                 Notification::make()
                     ->title('Produto não cadastrado')
                     ->warning()
@@ -232,7 +245,7 @@ class PDV extends  page implements HasForms, HasTable
                                                 ->searchable()
                                                 ->required()
                                                 ->options(Estado::all()->pluck('nome', 'id')->toArray())
-                                                ->reactive(),
+                                               ->live(debounce: 500),
                                             Select::make('cidade_id')
                                                 ->label('Cidade')
                                                 ->native(false)
@@ -245,7 +258,7 @@ class PDV extends  page implements HasForms, HasTable
                                                     }
                                                     return $estado->cidade->pluck('nome', 'id');
                                                 })
-                                                ->reactive(),
+                                               ->live(debounce: 500),
 
                                             TextInput::make('email')
                                                 ->columnSpan([
@@ -270,6 +283,7 @@ class PDV extends  page implements HasForms, HasTable
                                 ->label('Data da Venda')
                                 ->default(now()),
                             TextInput::make('valor_total')
+                                ->numeric()
                                 ->label('Valor Total')
                                 ->readOnly()
                                 ->default(function () {
@@ -277,6 +291,7 @@ class PDV extends  page implements HasForms, HasTable
                                     return $valorTotal;
                                 }),
                             TextInput::make('valor_pago')
+                                ->numeric()
                                 ->label('Valor Pago')
                                 ->autofocus()
                                 ->extraInputAttributes(['tabindex' => 1, 'style' => 'font-weight: bolder; font-size: 2rem; color: #32CD32;'])
@@ -288,6 +303,7 @@ class PDV extends  page implements HasForms, HasTable
                             TextInput::make('troco')
                                 ->extraInputAttributes(['style' => 'font-weight: bolder; font-size: 2rem; color: #1E90FF;'])
                                 ->readOnly()
+                                ->numeric()
                                 ->inputMode('decimal')
                                 ->label('Troco'),
                             Radio::make('financeiro')
