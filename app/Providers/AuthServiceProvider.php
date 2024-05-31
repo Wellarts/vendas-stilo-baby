@@ -4,6 +4,7 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 
+use App\Models\Cliente;
 use App\Models\Compra;
 use App\Models\contasPagar;
 use App\Models\ContasReceber;
@@ -11,7 +12,11 @@ use App\Models\FluxoCaixa;
 use App\Models\FormaPgmto;
 use App\Models\Fornecedor;
 use App\Models\Funcionario;
+use App\Models\PDV;
+use App\Models\Produto;
 use App\Models\User;
+use App\Models\Venda;
+use App\Models\VendaPDV;
 use App\Policies\ClientePolicy;
 use App\Policies\CompraPolicy;
 use App\Policies\ContasPagarPolicy;
@@ -28,6 +33,9 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use App\Policies\ActivityPolicy;
+use App\Policies\PDVPolicy;
+use App\Policies\ProdutoPolicy;
+use App\Policies\VendasPDVPolicy;
 use Spatie\Activitylog\Models\Activity;
 
 class AuthServiceProvider extends ServiceProvider
@@ -52,6 +60,8 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Venda::class => VendaPolicy::class,
         Activity::class => ActivityPolicy::class,
+        PDV::class => PDVPolicy::class,
+        VendaPDV::class => VendasPDVPolicy::class,
     ];
 
     /**
