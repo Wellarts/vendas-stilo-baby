@@ -11,6 +11,7 @@ use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -18,6 +19,7 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -30,6 +32,10 @@ class ProdutoResource extends Resource
 
     protected static ?string $navigationGroup = 'Cadastros';
 
+    protected static ?string $label = 'Produtos/Serviços';
+
+    protected static ?int $navigationSort = 9;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -40,34 +46,93 @@ class ProdutoResource extends Resource
                         '2xl' => 3,
                     ])
                     ->schema([
+                        Forms\Components\ToggleButtons::make('tipo')
+                            ->label('Tipo')
+                            ->default(1)
+                            ->columnSpanFull()
+                            ->options([
+                                '1' => 'Produto',
+                                '2' => 'Serviço',
+
+                            ])
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, $state) {
+                                if ($state == 1) {
+                                   $set('lucratividade', 0);
+                                } elseif ($state == 2) {
+                                    $set('lucratividade', 100);
+                                }
+                            })
+                                
+                            ->grouped(),
                         Forms\Components\TextInput::make('nome')
                             ->required()
                             ->maxLength(255),
                         Forms\Components\TextInput::make('codbar')
                             ->label('Código de Barras')
+                            ->hidden(function (Get $get) {
+                                if ($get('tipo') == 1) {
+                                    return false;
+                                } elseif ($get('tipo') == 2) {
+                                    return true;
+                                }
+                            })
                             ->required(false),
-                        Forms\Components\TextInput::make('estoque'),
+                        Forms\Components\TextInput::make('estoque')
+                            ->hidden(function (Get $get) {
+                                if ($get('tipo') == 1) {
+                                    return false;
+                                } elseif ($get('tipo') == 2) {
+                                    return true;
+                                }
+                            }),
                         Forms\Components\TextInput::make('valor_compra')
+                            ->label('Valor Compra')
+                            ->hidden(function (Get $get) {
+                                if ($get('tipo') == 1) {
+                                    return false;
+                                } elseif ($get('tipo') == 2) {
+                                    return true;
+                                }
+                            })
                             ->numeric()
-                            ->live(onBlur:true)
+                            ->live(onBlur: true)
                             ->afterStateUpdated(function (Get $get, Set $set) {
-                                $set('valor_venda', ((((float)$get('valor_compra') * (float)$get('lucratividade'))/100) + (float)$get('valor_compra')));
+                                $set('valor_venda', ((((float)$get('valor_compra') * (float)$get('lucratividade')) / 100) + (float)$get('valor_compra')));
                             }),
                         Forms\Components\TextInput::make('lucratividade')
-                            ->numeric()
-                           // ->required()
-                            ->live(onBlur:true)
+                            ->label('Lucratividade (%)')
+                            ->default(0)
+                            ->live(onBlur: true)
                             ->afterStateUpdated(function (Get $get, Set $set) {
-                                $set('valor_venda', ((((float)$get('valor_compra') * (float)$get('lucratividade'))/100) + (float)$get('valor_compra')));
+                                $set('valor_venda', ((((float)$get('valor_compra') * (float)$get('lucratividade')) / 100) + (float)$get('valor_compra')));
                             }),
                         Forms\Components\TextInput::make('valor_venda')
+                            ->label('Valor Venda')
                             ->numeric()
-                           // ->disabled(),
-                           ->live(onBlur:true)
-                           ->afterStateUpdated(function (Get $get, Set $set) {
-                            $set('lucratividade', (((((float)$get('valor_venda') - (float)$get('valor_compra')) / (float)$get('valor_compra')) * 100)));
-                        }),
-                ])->columns(2),
+                            // ->disabled(),
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (Get $get, Set $set) {
+                                if ($get('tipo') == 1) {
+                                    $set('lucratividade', (((((float)$get('valor_venda') - (float)$get('valor_compra')) / (float)$get('valor_compra')) * 100)));
+                                }
+                            }),
+                        FileUpload::make('foto')
+                            ->label('Fotos')
+                            ->columnSpanFull()
+                            ->panelLayout('grid')
+                            ->downloadable()
+                            ->multiple()
+                            ->maxSize(4096)
+                            ->maxFiles(3)
+                            ->hidden(function (Get $get) {
+                                if ($get('tipo') == 1) {
+                                    return false;
+                                } elseif ($get('tipo') == 2) {
+                                    return true;
+                                }
+                            })
+                    ])->columns(2),
             ]);
     }
 
@@ -79,8 +144,7 @@ class ProdutoResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('codbar')
-                     ->label('Código de Barras')
-                     ->searchable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('estoque')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('valor_compra')
@@ -89,6 +153,13 @@ class ProdutoResource extends Resource
                     ->label('Lucratividade (%)'),
                 Tables\Columns\TextColumn::make('valor_venda')
                     ->money('BRL'),
+                ImageColumn::make('foto')
+                    ->label('Fotos')
+                    ->alignCenter()
+                    ->circular()
+                    ->stacked()
+                    ->limit(2)
+                    ->limitedRemainingText(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime(),

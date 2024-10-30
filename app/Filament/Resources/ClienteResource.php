@@ -20,7 +20,6 @@ use Filament\Forms\Components\Grid;
 use Filament\Support\RawJs;
 use Filament\Tables\Actions\Action;
 
-
 class ClienteResource extends Resource
 {
 
@@ -29,6 +28,8 @@ class ClienteResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationGroup = 'Cadastros';
+
+    protected static ?int $navigationSort = 8;
 
     public static function form(Form $form): Form
     {

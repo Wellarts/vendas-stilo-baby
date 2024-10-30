@@ -26,7 +26,6 @@ class PDVRelationManager extends RelationManager
                Forms\Components\TextInput::make('produto_id')
                     ->required(),
                 Forms\Components\TextInput::make('qtd')
-                    ->numeric()
                     ->required(),
                 Forms\Components\TextInput::make('sub_total')
                     ->numeric()

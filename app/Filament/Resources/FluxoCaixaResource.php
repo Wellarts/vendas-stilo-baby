@@ -25,6 +25,8 @@ class FluxoCaixaResource extends Resource
 
     protected static ?string $navigationGroup = 'Financeiro';
 
+    protected static ?int $navigationSort = 6;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -58,6 +60,7 @@ class FluxoCaixaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('id','desc')
             ->columns([
                 Tables\Columns\TextColumn::make('tipo')
                     ->badge()

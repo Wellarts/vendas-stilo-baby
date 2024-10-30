@@ -129,6 +129,7 @@ class ItensVendaRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->modalHeading('Itens da Venda')
                     ->label('Adicionar Produtos')
+                    ->hidden(fn($livewire) => $livewire->ownerRecord->status_caixa == 1)
                     ->icon('heroicon-o-plus')
                     ->after(function ($data, $record) {
                         $produto = Produto::find($data['produto_id']);
@@ -143,24 +144,34 @@ class ItensVendaRelationManager extends RelationManager
                     ->icon('heroicon-o-currency-dollar')
                     ->hidden(fn($livewire) => $livewire->ownerRecord->status_caixa == 1)
                     ->color('success')
+                    ->action(function ($livewire) {
+                        if ($livewire->ownerRecord->valor_total > 0) {
+                            $addFluxoCaixa = [
+                                'valor' => ($livewire->ownerRecord->valor_total),
+                                'tipo'  => 'CREDITO',
+                                'obs'   => 'Recebido da venda nº: ' . $livewire->ownerRecord->id . '',
+                            ];
+                            $venda = Venda::find($livewire->ownerRecord->id);
+                            $venda->status_caixa = 1;
+                            $venda->save();
 
-                    ->action(function ($data, $livewire) {
-                        $addFluxoCaixa = [
-                            'valor' => ($livewire->ownerRecord->valor_total),
-                            'tipo'  => 'CREDITO',
-                            'obs'   => 'Recebido da venda nº: ' . $livewire->ownerRecord->id . '',
-                        ];
-                        $venda = Venda::find($livewire->ownerRecord->id);
-                        $venda->status_caixa = 1;
-                        $venda->save();
 
-
-                        Notification::make()
-                            ->title('Valor de R$' . $livewire->ownerRecord->valor_total . ' lançado no caixa com sucesso!')
-                            ->success()
-                            ->send();
-                        FluxoCaixa::create($addFluxoCaixa);
+                            Notification::make()
+                                ->title('Valor de R$' . $livewire->ownerRecord->valor_total . ' lançado no caixa com sucesso!')
+                                ->success()
+                                ->send();
+                            FluxoCaixa::create($addFluxoCaixa);
+                        } 
+                        else {
+                            Notification::make()
+                                ->title('Atenção')
+                                ->body('Valor da venda zerado. Adicione os produtos para depois lançar no caixa.')
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                        }
                     })
+
                     ->requiresConfirmation()
                     ->modalIcon('heroicon-o-currency-dollar')
 

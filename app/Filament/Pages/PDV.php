@@ -47,11 +47,15 @@ class PDV extends  page implements HasForms, HasTable
 
     protected static ?string $navigationIcon = 'heroicon-s-shopping-cart';
 
+    protected static ?string $model = Produto::class;
+
     protected static string $view = 'filament.pages.p-d-v';
 
     protected static ?string $title = 'PDV';
 
     protected static ?string $navigationGroup = 'Ponto de Venda';
+
+    protected static ?int $navigationSort = 2;
 
     public ?array $data = [];
 
@@ -61,17 +65,17 @@ class PDV extends  page implements HasForms, HasTable
     public $pdv;
     public $venda;
 
-  /*  public static function shouldRegisterNavigation(): bool
-    { */
-         /** @var \App\Models\User */
-     /*    $authUser =  auth()->user();
+    public static function shouldRegisterNavigation(): bool
+    {
+        /** @var \App\Models\User */
+        $authUser =  auth()->user();
 
-         if ($authUser->hasRole('TI')) {
-             return true;
-         } else {
-             return false;
-         }
-    } */
+        if ($authUser->hasRole('TI')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 
     public function mount(): void
@@ -83,25 +87,52 @@ class PDV extends  page implements HasForms, HasTable
     public function form(Form $form): Form
     {
         return $form
+            ->model(Produto::class)
             ->schema([
                 Section::make('Ponto de Venda')
                     ->columns(4)
                     ->schema([
-                        TextInput::make('produto_id')
-                            ->numeric()
+                        //     TextInput::make('produto_id')
+                        //         ->numeric()
+                        //         ->label('Produto')
+                        //         ->autocomplete()
+                        //         ->autofocus()
+                        //         ->extraInputAttributes(['tabindex' => 1])
+                        //         ->live(debounce: 900)
+                        //         ->afterStateUpdated(function ($state, Get $get, Set $set) {
+                        //           //  dd($get('produto_id'));
+                        //           //  $produto = Produto::where('codbar','=', $state)->first();
+
+                        //           //  $set('produto_nome', $produto->nome);
+                        //             $this->updated($state, $state);
+                        //         }),
+                        //  //   TextInput::make('produto_nome')
+                        Select::make('produto_id')
+                            ->columnSpan(2)
                             ->label('Produto')
-                            ->autocomplete()
+                            ->searchable()
+                            ->getSearchResultsUsing(function (string $search) {
+                                return Produto::query()
+                                    ->where('codbar', 'like', "%{$search}%")
+                                    ->orWhere('nome', 'like', "%{$search}%")
+                                    ->limit(50)
+                                    ->get()
+                                    ->mapWithKeys(function (Produto $product) {
+                                        // Exibe código de barras e nome no select
+                                        return [$product->id => "[{$product->codbar}] {$product->nome}"];
+                                    });
+                            })
+                            ->getOptionLabelUsing(fn($value): ?string => Produto::where('id', $value)->first()?->nome)
                             ->autofocus()
                             ->extraInputAttributes(['tabindex' => 1])
                             ->live(debounce: 900)
                             ->afterStateUpdated(function ($state, Get $get, Set $set) {
-                              //  dd($get('produto_id'));
-                              //  $produto = Produto::where('codbar','=', $state)->first();
-
-                              //  $set('produto_nome', $produto->nome);
+                                //  dd($get('produto_id'));
+                                //  $produto = Produto::where('codbar','=', $state)->first();
+                                 // dd($state);
+                                //  $set('produto_nome', $produto->nome);
                                 $this->updated($state, $state);
                             }),
-                     //   TextInput::make('produto_nome')
 
 
 
@@ -112,13 +143,14 @@ class PDV extends  page implements HasForms, HasTable
 
     public function updated($name, $value): void
     {
+       // dd($name);
 
         if ($name === 'produto_id') {
 
 
 
-            $produto = Produto::where('codbar', '=', $value)->first();
-         //   dd($produto);
+            $produto = Produto::where('id', '=', $value)->first();
+            //   dd($produto);
             if ($produto != null) {
                 $addProduto = [
                     'produto_id' => $produto->id,
@@ -137,7 +169,7 @@ class PDV extends  page implements HasForms, HasTable
                 $this->qtd = '';
                 $this->produto_nome = '';
             }
-            if($produto == '') {
+            if ($produto == '') {
                 Notification::make()
                     ->title('Produto não cadastrado')
                     ->warning()
@@ -158,6 +190,7 @@ class PDV extends  page implements HasForms, HasTable
 
             TextColumn::make('produto.nome'),
             TextInputColumn::make('qtd')
+                ->alignCenter()
                 ->summarize(Sum::make()->label('Qtd Produtos'))
                 ->updateStateUsing(function (Model $record, $state) {
                     $record->sub_total = ($state * $record->valor_venda);
@@ -168,17 +201,20 @@ class PDV extends  page implements HasForms, HasTable
 
                 ->label('Quantidade'),
             TextColumn::make('valor_venda')
+                ->alignCenter()
                 ->label('Valor Unitário')
                 ->money('BRL'),
             TextInputColumn::make('acres_desc')
+                ->alignCenter()
                 ->label('Acréscimo/Desconto')
                 ->updateStateUsing(function (Model $record, $state) {
-                    $record->sub_total = (($record->valor_venda + $state) * $record->qtd);
+                    $record->sub_total = (((float)$record->valor_venda + (float)$state) * $record->qtd);
                     $record->acres_desc = $state;
                     $record->save();
                 })
                 ->label('Acres/Desc'),
             TextColumn::make('sub_total')
+                ->alignCenter()
                 ->label('Sub-Total')
                 ->money('BRL')
                 ->summarize(Sum::make()->label('TOTAL')->money('BRL')),
@@ -188,13 +224,16 @@ class PDV extends  page implements HasForms, HasTable
     {
         return [
             CreateAction::make()
-                ->label('Finalizar Venda')
+                ->label('Finalizar (Ctrl+F7)')
+                ->icon('heroicon-o-document-currency-dollar')
+                ->color('success')
+                ->keyBindings('ctrl+f7')
                 ->modalHeading('Finalizar Venda - PDV')
                 ->model(VendaPDV::class)
                 ->createAnother(false)
                 ->successNotificationTitle('Venda em PDV finalizada com sucesso!')
-               // ->keyBindings(['keypress', 'f7'])
-               // ->keyBindings(['command+s', 'ctrl+s'])
+                // ->keyBindings(['keypress', 'f7'])
+                // ->keyBindings(['command+s', 'ctrl+s'])
                 ->form([
                     Grid::make('4')
                         ->schema([
@@ -205,7 +244,7 @@ class PDV extends  page implements HasForms, HasTable
                             Select::make('cliente_id')
                                 ->label('Cliente')
                                 ->default('1')
-                              //  ->options(Cliente::all()->pluck('nome', 'id')->toArray())
+                                //  ->options(Cliente::all()->pluck('nome', 'id')->toArray())
                                 ->relationship(name: 'cliente', titleAttribute: 'nome')
                                 ->createOptionForm([
                                     Grid::make([
@@ -214,10 +253,10 @@ class PDV extends  page implements HasForms, HasTable
                                     ])
                                         ->schema([
                                             TextInput::make('nome')
-                                            ->columnSpan([
-                                                'xl' => 2,
-                                                '2xl' => 2,
-                                            ])
+                                                ->columnSpan([
+                                                    'xl' => 2,
+                                                    '2xl' => 2,
+                                                ])
                                                 ->required()
                                                 ->maxLength(255),
                                             TextInput::make('cpf_cnpj')
@@ -245,7 +284,7 @@ class PDV extends  page implements HasForms, HasTable
                                                 ->searchable()
                                                 ->required()
                                                 ->options(Estado::all()->pluck('nome', 'id')->toArray())
-                                               ->live(debounce: 500),
+                                                ->live(debounce: 500),
                                             Select::make('cidade_id')
                                                 ->label('Cidade')
                                                 ->native(false)
@@ -258,7 +297,7 @@ class PDV extends  page implements HasForms, HasTable
                                                     }
                                                     return $estado->cidade->pluck('nome', 'id');
                                                 })
-                                               ->live(debounce: 500),
+                                                ->live(debounce: 500),
 
                                             TextInput::make('email')
                                                 ->columnSpan([
@@ -317,7 +356,7 @@ class PDV extends  page implements HasForms, HasTable
                                 ->numeric()
                                 ->required()
                                 ->label('Qtd de Parcelas')
-                                ->hidden(fn (Get $get): bool => $get('financeiro') != '2')
+                                ->hidden(fn(Get $get): bool => $get('financeiro') != '2')
 
 
                         ])
@@ -339,38 +378,35 @@ class PDV extends  page implements HasForms, HasTable
                         $addFluxoCaixa = [
                             'valor' => ($data['valor_total']),
                             'tipo'  => 'CREDITO',
-                            'obs'   => 'Recebido da venda nº: ' .$this->venda. '',
+                            'obs'   => 'Recebido da venda nº: ' . $this->venda . '',
                         ];
                         Notification::make()
-                                ->title('Valor lançado no fluxo de caixa!')
-                                ->success()
-                                ->send();
+                            ->title('Valor lançado no fluxo de caixa!')
+                            ->success()
+                            ->send();
                         FluxoCaixa::create($addFluxoCaixa);
                         return route('filament.admin.pages.p-d-v');
-
-                    }
-                    else {
+                    } else {
                         $valor_parcela = ($record->valor_total / $data['parcelas']);
                         $vencimentos = Carbon::now();
-                        for($cont = 0; $cont < $data['parcelas']; $cont++)
-                        {
-                                            $dataVencimentos = $vencimentos->addDays(30);
-                                            $parcelas = [
-                                            'vendapdv_id' => $this->venda,
-                                            'cliente_id' => $data['cliente_id'],
-                                            'valor_total' => $data['valor_total'],
-                                            'parcelas' => $data['parcelas'],
-                                            'ordem_parcela' => $cont+1,
-                                            'data_vencimento' => $dataVencimentos,
-                                            'valor_recebido' => 0.00,
-                                            'status' => 0,
-                                            'obs' => 'Venda em PDV - Nº '.$this->venda,
-                                            'valor_parcela' => $valor_parcela,
-                                            ];
-                                ContasReceber::create($parcelas);
+                        for ($cont = 0; $cont < $data['parcelas']; $cont++) {
+                            $dataVencimentos = $vencimentos->addDays(30);
+                            $parcelas = [
+                                'vendapdv_id' => $this->venda,
+                                'cliente_id' => $data['cliente_id'],
+                                'valor_total' => $data['valor_total'],
+                                'parcelas' => $data['parcelas'],
+                                'ordem_parcela' => $cont + 1,
+                                'data_vencimento' => $dataVencimentos,
+                                'valor_recebido' => 0.00,
+                                'status' => 0,
+                                'obs' => 'Venda em PDV - Nº ' . $this->venda,
+                                'valor_parcela' => $valor_parcela,
+                            ];
+                            ContasReceber::create($parcelas);
                         }
 
-                         return route('filament.admin.pages.p-d-v');
+                        return route('filament.admin.pages.p-d-v');
                     }
 
                     //  return route('filament.admin.pages.p-d-v');

@@ -31,7 +31,9 @@ class VendaPDVResource extends Resource
 
     protected static ?string $title = 'Vendas PDV';
 
-   
+    protected static ?int $navigationSort = 3;
+
+
 
     public static function form(Form $form): Form
     {
@@ -95,7 +97,7 @@ class VendaPDVResource extends Resource
                 Tables\Columns\TextColumn::make('updated_at')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->dateTime(),
-                
+
             ])
             ->filters([
                 //
@@ -113,14 +115,14 @@ class VendaPDVResource extends Resource
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             PDVRelationManager::class
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -128,5 +130,5 @@ class VendaPDVResource extends Resource
             'create' => Pages\CreateVendaPDV::route('/create'),
             'edit' => Pages\EditVendaPDV::route('/{record}/edit'),
         ];
-    }    
+    }
 }

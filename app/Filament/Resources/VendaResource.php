@@ -10,11 +10,9 @@ use App\Models\Cliente;
 use App\Models\FormaPgmto;
 use App\Models\Funcionario;
 use App\Models\Venda;
-use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\Summarizers\Sum;
@@ -26,26 +24,12 @@ class VendaResource extends Resource
 {
     protected static ?string $model = Venda::class;
 
-
+   
     protected static ?string $navigationIcon = 'heroicon-s-shopping-cart';
 
     protected static ?string $navigationGroup = 'Saídas';
 
-  /*  public function mount() {
-        Notification::make()
-            ->title('ATENÇÃO')
-            ->persistent()
-            ->danger()
-            ->body('Sua mensalidade está atrasada, regularize sua assinatura para evitar o bloqueio do sistema.')
-            ->actions([
-                Action::make('Entendi')
-                    ->button()
-                    ->close(),
-                ])
-            ->send();
-    } */
-
-    
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -88,7 +72,6 @@ class VendaResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('id', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->sortable(),
@@ -123,7 +106,7 @@ class VendaResource extends Resource
                 ]),
             ]);
     }
-
+    
     public static function getRelations(): array
     {
         return [
@@ -131,7 +114,7 @@ class VendaResource extends Resource
             ContasReceberRelationManager::class,
         ];
     }
-
+    
     public static function getPages(): array
     {
         return [
@@ -139,5 +122,8 @@ class VendaResource extends Resource
             'create' => Pages\CreateVenda::route('/create'),
             'edit' => Pages\EditVenda::route('/{record}/edit'),
         ];
-    }
+    } 
+    
+    
+
 }

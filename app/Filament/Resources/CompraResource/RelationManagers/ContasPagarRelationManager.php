@@ -12,6 +12,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -52,9 +53,8 @@ class ContasPagarRelationManager extends RelationManager
                             ->default('1')
                             ->required(),
                         Forms\Components\TextInput::make('parcelas')
-                            ->numeric()
                             ->default('1')
-                            ->live(debounce: 500)
+                            ->reactive()
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 if ($get('parcelas') != 1) {
                                     $set('valor_parcela', (($get('valor_total') / $get('parcelas'))));
@@ -117,7 +117,7 @@ class ContasPagarRelationManager extends RelationManager
                             ->default('true')
                             ->label('Pago')
                             ->required()
-                            ->live(debounce: 500)
+                            ->reactive()
                           //  ->hidden(fn (Get $get): bool => $get('parcelas') != '1')
                             ->afterStateUpdated(
                                 function (Get $get, Set $set) {
@@ -162,6 +162,7 @@ class ContasPagarRelationManager extends RelationManager
                     ->date(),
 
                 Tables\Columns\TextColumn::make('valor_parcela')
+                    ->summarize(Sum::make()->money('BRL')->label('Total Parcelas'))
                     ->badge()
                     ->color('danger')
                     ->label('Valor da Parcela')
@@ -176,6 +177,7 @@ class ContasPagarRelationManager extends RelationManager
                     ->color('success')
                     ->date(),
                 Tables\Columns\TextColumn::make('valor_pago')
+                    ->summarize(Sum::make()->money('BRL')->label('Total Pago'))
                     ->badge()
                     ->color('success')
                     ->label('Valor Pago'),

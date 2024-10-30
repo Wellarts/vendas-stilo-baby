@@ -15,6 +15,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -30,6 +31,8 @@ class ContasPagarResource extends Resource
     protected static ?string $navigationLabel = 'Contas a Pagar';
 
     protected static ?string $navigationGroup = 'Financeiro';
+
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
@@ -139,6 +142,7 @@ class ContasPagarResource extends Resource
                     ->date(),
 
                 Tables\Columns\TextColumn::make('valor_parcela')
+                    ->summarize(Sum::make()->money('BRL')->label('Total Parcelas'))
                     ->badge()
                     ->color('danger')
                     ->label('Valor da Parcela')
@@ -153,8 +157,8 @@ class ContasPagarResource extends Resource
                     ->color('success')
                     ->date(),
                 Tables\Columns\TextColumn::make('valor_pago')
+                    ->summarize(Sum::make()->money('BRL')->label('Total Pago'))
                     ->badge()
-                    ->money('BRL')
                     ->color('success')
                     ->label('Valor Pago'),
                 Tables\Columns\TextColumn::make('created_at')

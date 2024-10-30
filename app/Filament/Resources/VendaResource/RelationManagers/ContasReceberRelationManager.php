@@ -4,6 +4,7 @@ namespace App\Filament\Resources\VendaResource\RelationManagers;
 
 use App\Models\ContasReceber;
 use App\Models\FluxoCaixa;
+use App\Models\Venda;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
@@ -12,6 +13,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -55,7 +57,6 @@ class ContasReceberRelationManager extends RelationManager
                         ->required(),
 
                     Forms\Components\TextInput::make('parcelas')
-                        ->numeric()
                         ->default('1')
                         ->live(debounce: 500)
                         ->afterStateUpdated(function (Get $get, Set $set) {
@@ -168,6 +169,7 @@ class ContasReceberRelationManager extends RelationManager
                     ->date(),
 
                 Tables\Columns\TextColumn::make('valor_parcela')
+                    ->summarize(Sum::make()->money('BRL')->label('Total Parcelas'))
                     ->badge()
                     ->color('danger')
                     ->label('Valor da Parcela')
@@ -181,7 +183,8 @@ class ContasReceberRelationManager extends RelationManager
                     ->badge()
                     ->color('success')
                     ->date(),
-                Tables\Columns\TextColumn::make('valor_pago')
+                Tables\Columns\TextColumn::make('valor_recebido')
+                    ->summarize(Sum::make()->money('BRL')->label('Total Pago'))
                     ->label('Recebido')
                     ->badge()
                     ->color('success')
@@ -201,7 +204,7 @@ class ContasReceberRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                 ->label('Lançar Recebimento')
-                ->after(function ($data, $record) {
+                ->after(function ($data, $record, $livewire) {
                     if($record->parcelas > 1)
                     {
                         $valor_parcela = ($record->valor_total / $record->parcelas);
@@ -235,6 +238,10 @@ class ContasReceberRelationManager extends RelationManager
 
                         FluxoCaixa::create($addFluxoCaixa);
                     }
+
+                            $venda = Venda::find($livewire->ownerRecord->id);
+                            $venda->status_caixa = 1;
+                            $venda->save();
 
                 }
             ),
