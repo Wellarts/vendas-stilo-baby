@@ -7,10 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
-class ContasPagar extends Model
+class contasPagar extends Model
 {
     use HasFactory, LogsActivity;
-    
 
     protected $fillable = [
         'fornecedor_id',
