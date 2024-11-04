@@ -129,7 +129,7 @@ class PDV extends  page implements HasForms, HasTable
                             ->afterStateUpdated(function ($state, Get $get, Set $set) {
                                 //  dd($get('produto_id'));
                                 //  $produto = Produto::where('codbar','=', $state)->first();
-                                 // dd($state);
+                                // dd($state);
                                 //  $set('produto_nome', $produto->nome);
                                 $this->updated($state, $state);
                             }),
@@ -143,7 +143,7 @@ class PDV extends  page implements HasForms, HasTable
 
     public function updated($name, $value): void
     {
-       // dd($name);
+        // dd($name);
 
         if ($name === 'produto_id') {
 
@@ -206,9 +206,9 @@ class PDV extends  page implements HasForms, HasTable
                 ->money('BRL'),
             TextInputColumn::make('acres_desc')
                 ->alignCenter()
-                ->label('Acréscimo/Desconto')
+                ->label('Acres/Desc')
                 ->updateStateUsing(function (Model $record, $state) {
-                    $record->sub_total = (((float)$record->valor_venda + (float)$state) * $record->qtd);
+                    $record->sub_total = (((float)$record->sub_total + (float)$state));
                     $record->acres_desc = $state;
                     $record->save();
                 })
