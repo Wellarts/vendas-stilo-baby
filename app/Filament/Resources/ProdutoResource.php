@@ -49,7 +49,6 @@ class ProdutoResource extends Resource
                         Forms\Components\ToggleButtons::make('tipo')
                             ->label('Tipo')
                             ->default(1)
-                            ->required()
                             ->columnSpanFull()
                             ->options([
                                 '1' => 'Produto',
@@ -150,7 +149,7 @@ class ProdutoResource extends Resource
                     ->color(fn(string $state): string => match ($state) {
                         '1' => 'success',
                         '2' => 'warning',
-
+                        
                     })
                     ->formatStateUsing(function ($state) {
                         if ($state == 1) {
