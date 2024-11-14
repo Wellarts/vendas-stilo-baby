@@ -123,8 +123,8 @@ class ProdutoResource extends Resource
                             ->panelLayout('grid')
                             ->downloadable()
                             ->multiple()
-                            ->maxSize(1024)
-                            ->maxFiles(1)
+                            ->maxSize(4096)
+                            ->maxFiles(3)
                             ->hidden(function (Get $get) {
                                 if ($get('tipo') == 1) {
                                     return false;
