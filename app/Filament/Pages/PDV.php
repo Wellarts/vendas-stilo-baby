@@ -65,17 +65,17 @@ class PDV extends  page implements HasForms, HasTable
     public $pdv;
     public $venda;
 
-    public static function shouldRegisterNavigation(): bool
-    {
-        /** @var \App\Models\User */
-        $authUser =  auth()->user();
+    // public static function shouldRegisterNavigation(): bool
+    // {
+    //     /** @var \App\Models\User */
+    //     $authUser =  auth()->user();
 
-        if ($authUser->hasRole('TI')) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    //     if ($authUser->hasRole('TI')) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
 
     public function mount(): void
@@ -129,7 +129,7 @@ class PDV extends  page implements HasForms, HasTable
                             ->afterStateUpdated(function ($state, Get $get, Set $set) {
                                 //  dd($get('produto_id'));
                                 //  $produto = Produto::where('codbar','=', $state)->first();
-                                // dd($state);
+                                 // dd($state);
                                 //  $set('produto_nome', $produto->nome);
                                 $this->updated($state, $state);
                             }),
@@ -143,7 +143,7 @@ class PDV extends  page implements HasForms, HasTable
 
     public function updated($name, $value): void
     {
-        // dd($name);
+       // dd($name);
 
         if ($name === 'produto_id') {
 
