@@ -68,6 +68,12 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                   function (): string {
+                      return Blade::render('@laravelPWA');
+                   }
+              )
             ->resources([
                 config('filament-logger.activity_resource')
 
