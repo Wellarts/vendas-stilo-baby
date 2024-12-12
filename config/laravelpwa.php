@@ -7,7 +7,7 @@ return [
         'short_name' => 'Wsys Vendas',
         'start_url' => '/',
         'background_color' => '#050505',
-        'theme_color' => '#FFC300',
+        'theme_color' => '#FFE4B5',
         'display' => 'standalone',
         'orientation'=> 'any',
         'status_bar'=> 'black',
