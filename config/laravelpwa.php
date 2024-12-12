@@ -40,6 +40,10 @@ return [
                 'path' => '/images/icons/pwa-logo.png',
                 'purpose' => 'any'
             ],
+            '500x500' => [
+                'path' => '/images/icons/pwa-logo.png',
+                'purpose' => 'any'
+            ],
             '512x512' => [
                 'path' => '/images/icons/pwa-logo.png',
                 'purpose' => 'any'
