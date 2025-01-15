@@ -33,8 +33,8 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->favicon(asset('img/logo2.png'))
-            ->brandLogo(asset('img/logo2.png'))
+            ->favicon(asset('img/logo.png'))
+            ->brandLogo(asset('img/logo.png'))
             ->brandLogoHeight('5rem')
             ->login()
             ->colors([
