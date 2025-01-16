@@ -56,7 +56,7 @@ class AdminPanelProvider extends PanelProvider
                 VendasMesChart::class,
                 VendasPDVMesChart::class,
                 ComprasMesChart::class,
-                RanckingProdutos::class,
+               // RanckingProdutos::class,
 
             ])
             ->middleware([
