@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\VwSomaQuantidadeProdutoResource\Pages;
 use App\Filament\Resources\VwSomaQuantidadeProdutoResource\RelationManagers;
+use App\Models\PDV;
+use App\Models\VendaPDV;
 use App\Models\VwSomaQuantidadeProduto;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -25,7 +27,7 @@ class VwSomaQuantidadeProdutoResource extends Resource
 
     protected static ?string $navigationGroup = 'Consultas';
 
-    
+         
 
     protected static ?int $navigationSort = 19;
 
@@ -115,6 +117,7 @@ class VwSomaQuantidadeProdutoResource extends Resource
                     ->label('Rentabilidade')
                     ->sortable(),
             ])
+            
             ->filters([
                 Filter::make('Produto')
                     ->query(fn(Builder $query): Builder => $query->where('tipo', 1)),

@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\VwSomaQuantidadeProdutoResource\Pages;
 
 use App\Filament\Resources\VwSomaQuantidadeProdutoResource;
+use App\Models\PDV;
+use App\Models\VendaPDV;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 
@@ -12,10 +14,15 @@ class ManageVwSomaQuantidadeProdutos extends ManageRecords
 
     protected static ?string $title = 'Rentabilidade Produto/Serviço';
 
+    
+    
     protected function getHeaderActions(): array
     {
         return [
        //     Actions\CreateAction::make(),
         ];
+
+        
     }
+    
 }

@@ -13,8 +13,9 @@
 <body>
 
     <div class="mx-8">
-        <p style="font-size:150%" align="center"><b>Nome da Empresa</b><p>
-        <p style="font-size:130%" align="center">Telefone:  (00)00000-0000</p>
+        <p style="font-size:150%" align="center"><b>Stilo Baby</b><p>
+        <p style="font-size:150%" align="center">Av. Agamenon Magalhães, 135 - Lajedo - PE<p>
+        <p style="font-size:130%" align="center">Telefone:  (87)8162-7846</p>
         <p style="font-size:130%" align="center">Comprovante de Venda</p>
     </div>
 
