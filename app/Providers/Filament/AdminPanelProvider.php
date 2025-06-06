@@ -2,22 +2,23 @@
 
 namespace App\Providers\Filament;
 
+
 use App\Livewire\ComprasMesChart;
 use App\Livewire\PagarHojeStatsOverview;
-use App\Livewire\RanckingProdutos;
 use App\Livewire\ReceberHojeStatsOverview;
 use App\Livewire\VendasMesChart;
 use App\Livewire\VendasPDVMesChart;
+use App\Livewire\TotalVendasPorCliente;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
+use Hugomyb\FilamentErrorMailer\FilamentErrorMailerPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -36,7 +37,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->favicon(asset('img/logo.png'))
             ->brandLogo(asset('img/logo.png'))
-            ->brandLogoHeight('5rem')
+            ->brandLogoHeight('3rem')
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -56,6 +57,8 @@ class AdminPanelProvider extends PanelProvider
                 VendasMesChart::class,
                 VendasPDVMesChart::class,
                 ComprasMesChart::class,
+                TotalVendasPorCliente::class,
+
                // RanckingProdutos::class,
 
             ])
@@ -82,6 +85,9 @@ class AdminPanelProvider extends PanelProvider
             ->resources([
                 config('filament-logger.activity_resource')
 
+            ])
+            ->plugins([
+                FilamentErrorMailerPlugin::make()
             ]);
     }
 }
